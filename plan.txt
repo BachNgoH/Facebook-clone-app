@@ -1,0 +1,66 @@
+- Facebook like app
+- Main Features:
+    - User Authentication
+    - Messaging
+    - Friends : 
+        - Add
+        - Follow
+    - Post:
+        - have image uploads
+    - Groups
+    - News Feed:
+        - Latest Post From Friends
+        - AI recommendation?
+
+- Models
+    - User:
+        -username (first last)
+        - email address (email confirmation)
+        - password
+        - date of birth
+        - gender (Male Female Others)
+        - Profile image
+        - Cover image
+        - Friends list
+        - Following list
+    - Post:
+        - User (FK)
+        - Created date
+	  - content
+        - image
+        - Group (FK)
+        - reactions (FK)
+        - comments (FK)
+        - Shared posts
+        - Scope
+
+    - Comment:
+        - User (FK)
+        - Content
+        - Replies
+
+    - Reaction 
+        - Type (Like Love Haha Wow Sad Angry)
+        - User (FK)
+
+    - Group
+        - Users (members)
+        - posts
+        - is_public
+	  - admin can:
+		- delete post
+		- delete members
+		- delete group
+		
+		
+Messaging:   
+    - Box Chat:
+        - Members (User list)
+        - Chat list
+    - Chat
+        - Author 
+        - Content
+    ....
+
+
+    
