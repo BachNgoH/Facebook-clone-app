@@ -1,0 +1,82 @@
+.form {
+    width: 100%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.form h1{
+    font-size: 2.5rem;
+}
+
+.mainform {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.mainform input {
+    width: 100%;
+    margin: 0.5rem 0;
+    background-color: transparent;
+    font-family: 'Oswald', sans-serif;
+
+    border: none;
+    border-bottom: 1px solid white;
+    outline: 1px;
+    font-size: large;
+    color: white;
+}
+
+.mainform label{
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.button {
+    margin: 1rem;
+    margin-top: 2.5rem;
+    font-size: 1.5rem;
+    padding: 0.25rem 2rem;
+    align-self: flex-end;
+}
+
+.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(220, 20, 60, 0.61);
+    padding: 1rem;
+    margin-bottom: 10px;
+    border: 1px solid var(--main-red);
+    border-radius: 6px;
+}
+
+.confirm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgba(22, 214, 60, 0.61);
+    padding: 1rem;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.confirm h2 {
+    width: 100%;
+    text-align: center;
+}
+
+.loading {
+    margin-top: -2rem;
+    margin-left: -2rem;
+    height: 110%;
+    width: 100%;
+    position: fixed;
+    background:rgba(255, 255, 255, 0.412);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

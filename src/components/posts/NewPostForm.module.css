@@ -1,0 +1,78 @@
+.head {
+    width: 100%;
+    display: flex;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 1rem;
+}
+
+.head h1 {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+}
+
+.scopeSelector {
+    margin: 0.25rem 0;
+}
+
+.scopeSelector select{
+    width: 100%;
+    background-color: transparent;
+    color: white;
+    outline: none;
+    border: none;
+    font-family: "Bebas Neue", cursive;
+    font-size: 1rem;
+}
+
+.scopeSelector select option {
+    background-color: rgba(28, 27, 27, 0.734);
+}
+
+.textarea {
+    width: 100%;
+    display: inline-block;
+    margin: 1rem 0;
+    max-height: 5rem;
+}
+
+.textarea textarea{
+    width: 100%;
+    background-color: transparent;
+    color: white;
+    border-radius: 14px;
+    resize: none;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    padding: 0.5rem;
+    max-height: 10rem;
+    
+}
+
+.bottom {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.saveBtn{
+    width: 50%;
+    font-size: 1.5rem;
+}
+
+.preBottom {
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    margin: 1.5rem auto;
+    border: solid 2px #ccc;
+    padding: 1rem;
+    border-radius: 2rem;
+}
+
+.preBottom svg:hover{
+    background: var(--main-red);
+}

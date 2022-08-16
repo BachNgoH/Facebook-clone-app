@@ -1,0 +1,9 @@
+.logo {
+    width: 6rem;
+    height: 6rem;
+    color:white;
+    background-image: var(--main-gradient);    
+    font-size: 3rem;
+    margin:1rem;
+    margin-top: 5rem;
+}

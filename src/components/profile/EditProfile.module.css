@@ -1,0 +1,119 @@
+.main h2{
+    margin: 0;
+    text-align: center;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ava {
+    margin: 2rem;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.ava img {
+    width: 10rem;
+}
+
+.cover {
+    margin: 2rem;
+    width: 80%;
+    height: 12rem;
+    /* background-color: green; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.cover img {
+    width: 100%;
+}
+
+.bio {
+    width: 100%;
+    margin: 2rem 0;
+    display: flex;
+}
+
+.biotext {
+    width: 100%;
+    font-family: 'Oswald', sans-serif;
+    background-color: transparent;
+    resize: none;
+    color: white;
+    height: 8rem;
+    border-radius: 6px;
+    padding: 0.5rem;
+}
+
+.calendar {
+    width: 60%;
+    height: 3rem;
+    margin: 2rem;
+    background-color: white;
+    color: black;
+    font-size: 1.5rem;
+    border-radius: 14px;
+    outline: none;
+}
+
+.dob {
+    font-size: 1.5rem;
+}
+
+.gContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+
+}
+
+.gBtn {
+    font-size: 1.25rem;
+    width: 7rem;
+}
+
+.gBtn select{
+    width: 100%;
+    background-color: transparent;
+    color: white;
+    outline: none;
+    border: none;
+    font-family: "Bebas Neue", cursive;
+    font-size: 1.5rem;
+}
+
+.gBtn select option {
+    background-color: #1c1b1bbb;
+}
+
+.btn {
+    font-size: 1.25rem;
+    width: 7rem;
+    margin: 0 auto;
+}
+
+.sBtn {
+    margin: 1rem 0;
+    font-size: 1.25rem;
+    width: 7rem;
+}
+
+.sContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

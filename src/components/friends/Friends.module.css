@@ -1,0 +1,21 @@
+.frBtn {
+    width: 8rem;
+    margin: 0 auto;
+}
+
+.btncon {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+}
+
+.link {
+    text-decoration: none;
+    color: white;
+}
+
+.link:hover {
+    text-decoration: underline;
+}

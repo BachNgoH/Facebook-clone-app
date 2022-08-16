@@ -1,0 +1,65 @@
+.mainPrt {
+    width: 100%;
+}
+
+.card {
+    background-color: var(--main-black);
+    padding: 0.5rem;
+    flex-direction: column;
+    margin-bottom: 1rem;
+
+}
+
+.card h3 {
+    width: 100%;
+    text-align: center;
+}
+
+.items {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    width: 95%;
+    display: flex;
+    margin: 0 auto;
+    flex-direction: row;
+    padding: 0.5rem;
+    border-radius: 6px;
+}
+
+.item:hover {
+    background-color: rgba(204, 204, 204, 0.25);
+}
+
+.ava {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0.5rem;
+    overflow: hidden;
+    border-radius: 100%;
+}
+
+.ava img {
+    width: 3rem;
+}
+
+.usr {
+    flex-grow: 4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.loader {
+    margin: 0 auto;
+}
+
+.noRes {
+    margin: 0 auto;
+}

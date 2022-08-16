@@ -7,8 +7,29 @@ body {
     --main-red: #ec0868;
     --main-purple: #c200fb;
     --main-gradient: linear-gradient(to right top, #ec0868, #f30085, #f100a7, #e300d0, #c200fb);
+    --main-black: #272626;
     color: white;
     background-color: rgb(29, 27, 27);
 
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: transparent
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 6px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

@@ -1,0 +1,81 @@
+.main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.com {
+    width: 95%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.ava {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.ava img {
+    width: 3rem;
+}
+
+.mainComment{
+    margin: 0 0.5rem;
+    margin-bottom: 0.25rem;
+    padding: 0.5rem;
+    background-color: #272626;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 12rem;
+    font-weight: 200;
+    font-family: 'Oswald', sans-serif;
+
+}
+
+.usr {
+    width: 100%;
+    font-family: "Bebas Neue", cursive;
+}
+
+.cmt {
+    width: 100%;
+}
+
+.container {
+    width: 100%;
+}
+
+.bot {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.a {
+    color: white;
+    text-decoration: none;
+    margin: 0 1rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.a:hover {
+    text-decoration: underline;
+}
+
+.ago {
+    color: #ffffffb7;
+    margin: 0;
+    font-size: 0.8rem;   
+}
+
+.children {
+    width: 95%;
+    align-self: flex-end;
+}

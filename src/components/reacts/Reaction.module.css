@@ -1,0 +1,25 @@
+.heart:hover {
+    color: var(--main-red);
+}
+
+.count {
+    margin: 0 1rem;
+}
+
+.reactSelect {
+    position: absolute;
+    margin-top: -3rem;
+    margin-left: -1rem;
+    height: 3rem;
+    background-color: #2d2a2a;
+    border-radius: 14px;
+    display: flex;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+}
+
+.react {
+    margin:0.5rem
+}
+.react:hover {
+    transform: scale(1.5);
+}
