@@ -1,4 +1,4 @@
-from dataclasses import field
+from django.db.models import Q
 from rest_framework import serializers
 from .models import Profile, User, UserFollow, UserFriendRequest
 
@@ -17,17 +17,16 @@ class FriendRequestSerializer(serializers.ModelSerializer):
         model = UserFriendRequest
         fields = ("user_sender", "created", "accepted")
 
+class PublicProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('profile_image',)
+
 class UserPublicSerializer(serializers.ModelSerializer):
-    profile_image = serializers.SerializerMethodField()
+    profile = PublicProfileSerializer(read_only=True)
     class Meta:
         model = User
-        fields = ('id','email', 'first_name', 'last_name', 'profile_image')
-
-    def get_profile_image(self, obj):
-        print(obj, "OBJECT")
-        if obj.profile.profile_image and hasattr(obj.profile.profile_image, "urls"):
-            return obj.profile.profile_image
-        return None
+        fields = ('id','email', 'first_name', 'last_name', 'profile')
 
 class ProfileSerializer(serializers.ModelSerializer):
     gender = serializers.ChoiceField(Profile.GENDER_CHOICES, allow_null=True, required=False)
@@ -56,12 +55,13 @@ class UserSerializer(serializers.ModelSerializer):
     following = serializers.SerializerMethodField()
     followers = serializers.SerializerMethodField()
     friend_requests = serializers.SerializerMethodField()
-
+    username = serializers.SerializerMethodField()
+    
     class Meta:
         model = User
         fields = ('id','email', 'first_name', 'last_name', 
                 'is_verified', 'friends', 'following', 
-                'followers', 'profile', 'friend_requests')
+                'followers', 'profile', 'friend_requests', 'username')
 
     def get_following(self, obj):
         return FollowingSerializer(obj.following.all(), many=True).data
@@ -71,3 +71,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_friend_requests(self, obj):
         return FriendRequestSerializer(obj.friend_requests.all(), many=True).data
+
+    def get_username(self, obj):
+        return obj.first_name + " " + obj.last_name

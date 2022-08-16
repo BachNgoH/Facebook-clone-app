@@ -44,8 +44,8 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name="comments", on_delete=models.CASCADE)
     content = models.CharField(max_length=1000)
-    reply_of_comment = models.ForeignKey("self", null=True, on_delete=models.CASCADE)
-
+    reply_of_comment = models.ForeignKey("self", null=True, on_delete=models.CASCADE, related_name="replies")
+    created = models.DateTimeField(auto_now_add=True, null=True)
 
 class React(models.Model):
     post = models.ForeignKey(Post, related_name="reacts", on_delete=models.CASCADE)

@@ -1,5 +1,5 @@
-
-from django.dispatch import receiver
+from urllib import request
+from django.db.models import Q
 from base.models import User, Profile, UserFollow, UserFriendRequest
 from rest_framework import generics
 from rest_framework.response import Response
@@ -14,6 +14,13 @@ class UserListView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset()
+        valueList = user.friends.values_list('id', flat=True)
+        queryset = queryset.filter(~Q(id__in=valueList), ~Q(id=user.id), is_verified=True)
+        return queryset
+
 class UserRetriveView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -26,8 +33,9 @@ class CurrentUserRetrieveView(generics.RetrieveAPIView):
 
     def get_object(self):
         current_user = self.request.user
-        obj = current_user
-        return obj
+        if current_user is None:
+            return None
+        return User.objects.get(id=current_user.id) 
 
 
 class ProfileCreateView(generics.CreateAPIView):
@@ -77,11 +85,11 @@ def unfollow(request, id):
     if not User.objects.filter(id=id).exists():
         return Response("User not found", status=status.HTTP_400_BAD_REQUEST)
     
-    relationship = current_user.following.all().get(following_user_id=target_user)
 
-    if not current_user.following.all().filter(following_user_id=target_user).exits():
+    if not current_user.following.all().filter(following_user_id=target_user).exists():
         return Response("User not found", status=status.HTTP_400_BAD_REQUEST)
 
+    relationship = current_user.following.all().get(following_user_id=target_user)
     relationship.delete()
     return Response("Unfollow successfully", status=status.HTTP_200_OK)
 
@@ -152,3 +160,33 @@ def get_all_friends(request):
     user = request.user
     data = UserPublicSerializer(user.friends.all(), many=True).data
     return Response(data, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def unfriend(request, id):
+    current_user = request.user
+
+    if not current_user.friends.all().filter(id=id).exists():
+        return Response("User not found", status=status.HTTP_400_BAD_REQUEST)
+
+    current_user.friends.set(current_user.friends.exclude(id=id))
+    current_user.save()
+
+    return Response("Unfriend successfully", status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_friend_request(request, id):
+    current_user = request.user
+    target_user = User.objects.get(id=id)
+
+    if not User.objects.filter(id=id).exists():
+        return Response("User not found", status=status.HTTP_400_BAD_REQUEST)
+    
+
+    if not target_user.friend_requests.all().filter(user_sender=current_user).exists():
+        return Response("User not found", status=status.HTTP_400_BAD_REQUEST)
+
+    relationship = target_user.friend_requests.all().get(user_sender=current_user)
+    relationship.delete()
+    return Response("delete friend request successfully", status=status.HTTP_200_OK)

@@ -52,6 +52,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         '''
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def __str__(self) -> str:
+        return self.first_name + ' '+ self.last_name
+
 class UserFollow(models.Model):
     user_id = models.ForeignKey(User, related_name="following", on_delete=models.CASCADE)
     following_user_id = models.ForeignKey(User, related_name="followers", on_delete=models.CASCADE)
@@ -63,6 +66,7 @@ class UserFriendRequest(models.Model):
 
     accepted = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
+    
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

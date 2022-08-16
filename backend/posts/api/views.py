@@ -1,13 +1,13 @@
-from rest_framework import generics
+from turtle import pos
+from rest_framework import generics, exceptions
 from rest_framework.permissions import IsAuthenticated
-from posts.models import Group, Image, Post
+from posts.models import Comment, Group, Image, Post, React
 from base.models import User
-from posts.serializers import GroupSerializer, ImageSerializer, PostSerializer
+from posts.serializers import CommentSerializer, GroupSerializer, ImageSerializer, PostSerializer, ReactSerializer
 from django.db.models import Q
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
-
 
 
 class PostCreateListView(generics.ListCreateAPIView):
@@ -20,7 +20,45 @@ class PostCreateListView(generics.ListCreateAPIView):
         user_following = [query.following_user_id for query in  user.following.all()]
         queryset = self.queryset.filter(Q(scope='PU', author__in=user.friends.all()) |
                                         Q(scope='PU', author__in=user_following) |
-                                        Q(scope='PR', author__in=user.friends.all()))
+                                        Q(scope='PR', author__in=user.friends.all())).order_by("-created")
+        return queryset
+
+class PostByUserListView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    permission_classes = (IsAuthenticated,)
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        if User.objects.filter(id= self.kwargs[self.lookup_field]).exists():
+            user = User.objects.get(id= self.kwargs[self.lookup_field])
+        else:
+            raise exceptions.NotAcceptable(
+                "No User Found",
+                "no_user_found",
+            )
+        current_user = self.request.user
+        if (user.id == current_user.id):
+            queryset = self.queryset.filter(author=user).order_by("-created")
+        elif (user in current_user.friends.all()):
+            queryset = self.queryset.filter(Q(scope='PU', author=user) | Q(
+                scope='PR', author=user)).order_by("-created")
+        else:
+            queryset = self.queryset.filter(author=user, scope='PU')
+        return queryset
+
+class PostRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        user = self.request.user
+        user_following = [query.following_user_id for query in  user.following.all()]
+        queryset = self.queryset.filter(Q(scope='PU', author__in=user.friends.all()) |
+                                        Q(scope='PU', author__in=user_following) |
+                                        Q(scope='PR', author__in=user.friends.all()) |
+                                        Q(author=user)).order_by("-created")
         return queryset
 
 
@@ -51,6 +89,68 @@ class GroupListCreateView(generics.ListCreateAPIView):
         queryset = self.queryset.filter(admin=user)
         return queryset
 
+class CommentListCreateView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+    permission_classes = (IsAuthenticated,)
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        if Post.objects.filter(id=self.kwargs[self.lookup_field]).exists():
+            post = Post.objects.get(id=self.kwargs[self.lookup_field])
+        else:
+            raise exceptions.NotAcceptable(
+                'Post not found',
+                'post_not_found'
+            )
+        queryset = self.queryset.filter(post__id=post.id).order_by("-created")
+        return queryset
+    
+    def perform_create(self, serializer):
+        if Post.objects.filter(id=self.kwargs[self.lookup_field]).exists():
+            post = Post.objects.get(id=self.kwargs[self.lookup_field])
+        else:
+            raise exceptions.NotAcceptable(
+                'Post not found',
+                'post_not_found'
+            )
+
+        serializer.save(post=post)
+
+class CommentRepliesListView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+    permission_classes = (IsAuthenticated,)
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        comment = Comment.objects.get(id= self.kwargs[self.lookup_field])
+        return comment.replies.all()
+
+
+class ReactListCreateView(generics.ListCreateAPIView):
+    serializer_class = ReactSerializer
+    queryset = React.objects.all()
+    permission_classes = (IsAuthenticated,)
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        if Post.objects.filter(id=self.kwargs[self.lookup_field]).exists():
+            post = Post.objects.get(id=self.kwargs[self.lookup_field])
+        else:
+            raise exceptions.NotAcceptable(
+                'Post not found',
+                'post_not_found'
+            )
+        queryset = self.queryset.filter(post__id=post.id)
+        return queryset
+
+class ReactDeleteView(generics.DestroyAPIView):
+    serializer_class = ReactSerializer
+    queryset = React.objects.all()
+    permission_classes = (IsAuthenticated,)
+    lookup_field = 'pk'
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -73,21 +173,3 @@ def add_member_to_group(request):
     group.members.add(tobe_add_mem)
     group.save()
     return Response('Add member to group successfully', status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_all_post_of_user(request, id):
-    current_user = request.user
-    if User.objects.filter(id=id).exists():
-        user = User.objects.get(id=id)
-
-    if (user.id == current_user.id):
-        posts = Post.objects.filter(author=user).order_by("-created")
-    elif (user in current_user.friends):
-        posts = Post.objects.filter(Q(scope='PU', author=user) | Q(
-            scope='PR', author=user)).order_by("-created")
-    else:
-        posts = Post.objects.filter(author=user, scope='PU')
-
-    return Response(PostSerializer(posts, many=True).data, status=status.HTTP_200_OK)
