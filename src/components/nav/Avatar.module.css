@@ -9,6 +9,7 @@
     margin: 0 2rem;
     overflow: hidden;
     z-index: 1;
+    background-color: var(--main-black);
 }
 
 .ava[disabled] {
@@ -32,14 +33,17 @@
 
 .profile{
     top: 0;
-
     position: absolute;
-    background: var(--main-gradient);
+    background: var(--main-black);
     width: 18rem;
     margin-top: 5rem;
     margin-right: 2rem;
     display: flex;
     flex-direction: column;
+    z-index: 100;
+    overflow: hidden;
+
+    transition: height 500ms ease;
 }
 
 .profileSection {
@@ -55,9 +59,64 @@
 }
 
 .profileSection:hover {
-    background:  rgba(37, 34, 34, 0.126);
+    background:  #808080;
 }
 
 .profileSection svg {
     padding: 0 0.75rem;
+}
+
+.badge {
+    background-color: var(--main-purple);
+    border-radius: 14rem;
+    margin: 0 1rem;
+    font-size: 1rem;
+    width: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notiname {
+    font-size: 0.75rem;
+}
+.noticontent {
+    font-family: 'Oswald', sans-serif;
+
+}
+.menu {
+    width: 95%;
+    overflow: hidden;
+}
+
+.menuPrimaryEnter {
+    position: absolute;
+    transform: translateX(-110%);
+}
+.menuPrimaryEnterActive {
+    transform: translateX(0%);
+    transition: all 500ms ease;
+}
+.menuPrimaryExit {
+    position: absolute;
+}
+.menuPrimaryExitActive {
+    transform: translateX(-110%);
+    transition: all 500ms ease;
+}
+
+.menuSecondaryEnter {
+    position: absolute;
+    transform: translateX(110%);
+}
+.menuSecondaryEnterActive {
+    transform: translateX(0%);
+    transition: all 500ms ease;
+}
+.menuSecondaryExit {
+    position: absolute;
+}
+.menuSecondaryExitActive {
+    transform: translateX(110%);
+    transition: all 500ms ease;
 }

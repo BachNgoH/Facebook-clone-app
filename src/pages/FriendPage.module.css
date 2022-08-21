@@ -42,3 +42,9 @@
 .active {
     background-color: var(--main-red);
 }
+
+@media only screen and (max-width: 450px)  {
+    .btns {
+        flex-direction: column;
+    }
+}

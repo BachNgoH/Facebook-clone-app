@@ -4,9 +4,12 @@ import { useHistory } from "react-router-dom";
 import classes from "./MainNavigation.module.css";
 import SearchBar from "../nav/SearchBar";
 import Avatar from "../nav/Avatar";
+import NotificationContext from "../../store/notification";
+import { useContext } from "react";
 
 const MainNavigation = () => {
     const history = useHistory();
+    const { notificationCount } = useContext(NotificationContext)
     const navigateToMainPageHandler = () => {
         history.push("/");
     };
@@ -24,7 +27,7 @@ const MainNavigation = () => {
                 <SearchBar />
             </div>
             <div className={classes.navBox}>
-                <Avatar />
+                <Avatar notificationCount={notificationCount}/>
             </div>
         </div>
     );

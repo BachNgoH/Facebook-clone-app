@@ -1,6 +1,6 @@
 
-const base_url = "http://localhost:8003/";
-
+export const base_url = "http://localhost:8000/";
+export const base_ws_url = "127.0.0.1:8000/"
 
 export async function sendRequest(url, method, body, authToken) {
 

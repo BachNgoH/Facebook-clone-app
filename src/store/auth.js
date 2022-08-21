@@ -74,6 +74,9 @@ export const AuthProvider = ({ children }) => {
         if (response.status === 200) {
             setAuthTokens(data);
             setIsLoggedIn(true)
+            if (authTokens){
+                getUser(authTokens)
+            }  
             localStorage.setItem("authTokens", JSON.stringify(data));
         } else {
             logoutUser();
@@ -103,7 +106,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (loading) {
             updateToken();
-            getUser(authTokens)
         }
 
 
@@ -111,7 +113,6 @@ export const AuthProvider = ({ children }) => {
         const interval = setInterval(async () => {
             if (authTokens) {
                 updateToken();
-                getUser(authTokens)
             }
         }, twentyThreeHours);
         return () => clearInterval(interval);

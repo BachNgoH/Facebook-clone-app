@@ -1,0 +1,38 @@
+
+#wave .dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-right: 0.5px;
+    background: gray;
+    animation: wave 1s linear infinite;
+    animation-delay: -0.9s;
+}
+#wave .dot.two {
+    animation-delay: -0.7s;
+}
+#wave .dot:nth-child(3) {
+    animation-delay: -0.6s;
+}
+
+#wave {
+    background-color: var(--main-black);
+    width: 2rem;
+    padding: 0.25rem 0 0.25rem 0.75rem;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    margin: 2px 0;
+}
+
+@keyframes wave {
+    0%,
+    60%,
+    100% {
+        transform: initial;
+    }
+    30% {
+        transform: translateY(-12px);
+    }
+}
+
