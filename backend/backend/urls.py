@@ -24,4 +24,5 @@ urlpatterns = [
     path('api/user/', include('base.api.urls')),
     path('api/post/', include('posts.api.urls')),
     path('api/search/', include('search.urls')),
+    path('api/chats/', include("backend.api_router")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

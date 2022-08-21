@@ -1,6 +1,7 @@
 from turtle import pos
 from rest_framework import generics, exceptions
 from rest_framework.permissions import IsAuthenticated
+from posts.api.paginaters import PostPagination
 from posts.models import Comment, Group, Image, Post, React
 from base.models import User
 from posts.serializers import CommentSerializer, GroupSerializer, ImageSerializer, PostSerializer, ReactSerializer
@@ -14,6 +15,7 @@ class PostCreateListView(generics.ListCreateAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
     permission_classes = (IsAuthenticated, )
+    pagination_class = PostPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -28,6 +30,7 @@ class PostByUserListView(generics.ListAPIView):
     queryset = Post.objects.all()
     permission_classes = (IsAuthenticated,)
     lookup_field = 'id'
+    pagination_class = PostPagination
 
     def get_queryset(self):
         if User.objects.filter(id= self.kwargs[self.lookup_field]).exists():

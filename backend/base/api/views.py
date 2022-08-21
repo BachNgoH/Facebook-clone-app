@@ -1,3 +1,4 @@
+from unicodedata import name
 from urllib import request
 from django.db.models import Q
 from base.models import User, Profile, UserFollow, UserFriendRequest
@@ -7,7 +8,7 @@ from rest_framework import status
 from base.serializers import FollowingSerializer, FollowersSerializer, FriendRequestSerializer, ProfileSerializer, UserPublicSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
-
+from chats.models import Conversation
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
@@ -145,6 +146,11 @@ def accept_friend_request(request, id):
     friend_request.delete()
 
     receiver.friends.add(sender)
+    names = [sender.id, receiver.id]
+    print(names)
+    names.sort()
+    print(names)
+    Conversation.objects.create(name=f"{names[0]}__{names[1]}")
     return Response("Friend request accepted successfully", status=status.HTTP_200_OK)
 
 @api_view(['GET'])
