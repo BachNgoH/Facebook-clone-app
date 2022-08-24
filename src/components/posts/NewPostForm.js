@@ -14,14 +14,7 @@ import { useResizeableInput } from "../../utils/customHooks";
 const NewPostForm = (props) => {
 
     const authCtx = useContext(AuthContext)
-    const [user, setUser] = useState(null)
-
-    useEffect(() => {
-        const getUser = async () => {
-            setUser(await authCtx.getCurrentUser(authCtx.authTokens) );
-        }
-        getUser()
-    }, []);   
+    const [user, _] = useState( JSON.parse( localStorage.getItem("user") ? localStorage.getItem("user"): null))
 
     const [scope, setScope] = useState("PU")
     const [content, input, setContent] = useResizeableInput({placeholder: `What's on your mind? ${user? user.first_name: ""}`})
@@ -41,9 +34,13 @@ const NewPostForm = (props) => {
         const response = await sendRequest("api/post/", "POST", JSON.stringify(body), authCtx.authTokens.access)
         if (response.ok) {
             setContent("")
-            props.onClose()
             props.refresh()
-            history.push("/")
+            props.onClose()
+            // if (props.in === "profile_page"){
+            //     history.push(`/profile/${user.id}`)
+            // }else {
+            //     history.push("/")
+            // }
         }else {
             alert("Something went wrong")
         }      

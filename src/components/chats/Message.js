@@ -4,13 +4,19 @@ import classes from "./Message.module.css";
 import React from "react";
 import Card from "../ui/Card";
 import { base_url } from "../../store/extra";
+import moment from "moment";
 
 const Message = ({ message, isLastOfBlock, showTimestamp }) => {
     const { currentUser } = useContext(AuthContext);
 
     const formatMessageTimestamp = (timestamp) => {
         const date = new Date(timestamp);
-        return date.toLocaleTimeString().slice(0, 5);
+        const today = new Date()
+        if (today.toDateString() === date.toDateString()){
+            return moment(date).format('h:mm a')
+        }
+
+        return moment(date).format('MMMM Do YYYY, h:mm a')
     };
     const imageUrlHelper = (img_url) => {
         if (!img_url.startsWith(base_url)) {

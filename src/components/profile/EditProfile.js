@@ -10,7 +10,7 @@ const EditProfile = (props) => {
     const [birthDate, setBirthDate] = useState(
         new Date(props.user.profile.date_of_birth)
     );
-    const [gender, setGender] = useState(props.user.profile.gender);
+    const [gender, setGender] = useState(props.user.profile.gender? props.user.profile.gender: 'M');
     const [profileImage, setProfileImage] = useState(null);
     const [coverImage, setCoverImage] = useState(null);
     const [bio, setBio] = useState(props.user.profile.bio);

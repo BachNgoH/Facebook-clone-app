@@ -52,7 +52,7 @@ const Post = (props) => {
                 </span>
                 </div>
                 {showNewShare && <NewPostForm onClose={() => setShowNewShare(false)} post={
-                    <Post item={props.is_nested ? props.children.props.item: props.item} refresh={props.refresh} inshare={true}/>
+                    <Post item={props.item.is_nested ? props.children.props.item: props.item} refresh={props.refresh} inshare={true}/>
                 } refresh={props.refresh} shared_post_id={props.is_nested ? props.children.props.item.id: props.item.id}/>}
             </div>}
         </Card>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { sendRequest } from "./extra";
+import jwt_decode from 'jwt-decode'
 
 const AuthContext = React.createContext({
     authTokens: "",
@@ -31,9 +32,9 @@ export const AuthProvider = ({ children }) => {
             password: password,
         }));
         const data = await response.json()
-        await getUser(data)
-
+        
         if (response.status === 200) {
+            await getUser(data)
             setAuthTokens(data);
             setIsLoggedIn(true);
             localStorage.setItem("authTokens", JSON.stringify(data));
@@ -55,8 +56,9 @@ export const AuthProvider = ({ children }) => {
 
     const getCurrentUser = useCallback(async (token_data) => {
         const accessToken = token_data.access;
+        const decoded = jwt_decode(accessToken)
         const response = await sendRequest(
-            "api/user/profiles/current",
+            `api/user/profiles/${decoded["user_id"]}`,
             "GET",
             null,
             accessToken

@@ -8,6 +8,8 @@ import AuthContext from "../store/auth";
 import { ClipLoader } from "react-spinners";
 import EditProfile from "../components/profile/EditProfile";
 import PostList from "../components/posts/PostList";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMessage } from "@fortawesome/free-solid-svg-icons";
 
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
@@ -20,6 +22,8 @@ const ProfilePage = () => {
 
     const authCtx = useContext(AuthContext);
     const history = useHistory();
+    const currentUser = authCtx.currentUser
+
     let { id } = useParams();
 
     const getUser = useCallback(async () => {
@@ -33,8 +37,6 @@ const ProfilePage = () => {
             accessToken
         );
         const data = await response.json();
-        const currentUser = await authCtx.currentUser;
-        console.log(currentUser);
         setIsCurrentUser(currentUser.id === data.id);
         const inFriends =
             typeof currentUser.friends.find(
@@ -50,10 +52,6 @@ const ProfilePage = () => {
                 (element) =>
                     element.user_sender === currentUser.id && !element.accepted
             ) !== "undefined";
-        console.log("IN FRIENDS", inFriends);
-        console.log("IN Follow", inFollowing);
-        console.log("IN REQUESTED", inFriendRequested);
-        console.log("DATA", data);
         setInFriendList(inFriends);
         setInFollowingList(inFollowing);
         setInRequestedList(inFriendRequested);
@@ -134,6 +132,13 @@ const ProfilePage = () => {
         }
     };
 
+    const onToConversation = () => {
+        if (!isCurrentUser) {
+            const ids = [id, currentUser.id].sort()
+            history.push(`/chats/mes/${ids[0]}__${ids[1]}`)
+        }
+    }
+
     return (
         <>
             <Layout>
@@ -167,6 +172,7 @@ const ProfilePage = () => {
                                         : null}
                                 </h1>
                                 <p>{user && user.friends.length} friends</p>
+                                <p>{user && user.profile.bio !== "null" && user.profile.bio}</p>
                             </div>
                             <div className={classes.buttons}>
                                 {!isLoading && !isCurrentUser && (
@@ -192,7 +198,6 @@ const ProfilePage = () => {
                                                 Add Friend
                                             </Button>
                                         )}
-
                                         {inFollowingList ? (
                                             <Button
                                                 className={classes.btn}
@@ -208,6 +213,9 @@ const ProfilePage = () => {
                                                 Follow
                                             </Button>
                                         )}
+                                        <Button className={classes.btn} onClick={onToConversation}>
+                                            <FontAwesomeIcon icon={faMessage}/> Message
+                                        </Button>
                                     </>
                                 )}
                                 {!isLoading && isCurrentUser && (

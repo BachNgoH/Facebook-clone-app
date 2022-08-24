@@ -90,7 +90,7 @@ const Chats = () => {
     }, [conversationName]);
 
     const updateTyping = (event) => {
-        if (event.user !== user.id) {
+        if (event.user !== String(user.id)) {
             setTyping(event.typing);
         }
     };
@@ -131,7 +131,7 @@ const Chats = () => {
                             behavior: "smooth",
                         });
                         sendJsonMessage({ type: "read_messages" });
-                        setMessageHistory((prev) => [data.message, ...prev]);
+                        setMessageHistory((prev) => [data.message , ...prev]);
                         break;
 
                     case "last_50_messages":

@@ -25,7 +25,9 @@
 .time {
     width: 100%;
     text-align: center;
-    font-size: 1rem;
+    font-size: 0.75rem;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 200;
 }
 
 .from_me {

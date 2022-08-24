@@ -50,8 +50,6 @@ const PostList = (props) => {
                 return item
             })
         );
-        console.log(data_posts);
-        console.log(page +1);
         setPage(page => {return page + 1})
         setHasNext(data.next !== null)
         setPosts(prev => prev.concat(data_posts));
@@ -62,20 +60,27 @@ const PostList = (props) => {
         getAllPosts(page);
     }, []);
 
+    const onRefresh = () =>{ 
+        setPosts([])
+        setPage(1)
+        getAllPosts(1)    
+    }
+
     return (
         <div className={classes.list}>
             {(props.in === "profile_page") && props.current && (
-                <NewPost refresh={getAllPosts} />
+                <NewPost refresh={onRefresh} />
             )}
-            {!(props.in === "profile_page") && <NewPost refresh={getAllPosts} />}
+            {!(props.in === "profile_page") && <NewPost refresh={onRefresh} in={props.in}/>}
             <InfiniteScroll
             dataLength={posts.length}
             next={() => getAllPosts(page)}
             hasMore={hasNext}
             loader={<ClipLoader color="#ccc" className={classes.loader}/>}
             >
-                {posts.map(item => <Post key={item.id} item={item} inshare={false}>
-                    <Post key={item.id} item={item}></Post>
+                {posts.map(item => <Post key={item.id} item={item} inshare={false} refresh={onRefresh}>
+
+                    {item.is_nested && <Post key={ item.nested_post.id} item={item.nested_post} refresh={onRefresh} ></Post>}
                 </Post>)}
             </InfiniteScroll>
         </div>

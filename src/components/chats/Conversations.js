@@ -21,17 +21,13 @@ const Conversations = (props) => {
                 authTokens.access
             );
             const data = await res.json();
-            console.log(data.friends);
+            console.log(data , "DATA");
             setActiveConversations(data)
         }
         fetchUsers();
     }, [notificationCount]);
 
 
-    const createConversationName = (id) => {
-        const namesAlph = [currentUser?.id, id].sort();
-        return `${namesAlph[0]}__${namesAlph[1]}`;
-    };
     const formatMessageTimestamp = (timestamp) => {
         if (!timestamp) return;
         const date = new Date(timestamp);
@@ -54,7 +50,7 @@ const Conversations = (props) => {
             ? conversations.map((c) => (
                 <NavLink className={classes.link} 
                 key={c.other_user.id}
-                to={`/chats/mes/${createConversationName(c.other_user.id)}`}
+                to={`/chats/mes/${c.name}`}
                 activeClassName={classes.active}>
                     <div className={classes.ava}>
                         <img src={imageUrlHelper(c.other_user.profile.profile_image)}/>

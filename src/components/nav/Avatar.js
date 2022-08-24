@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useState } from "react";
+import NotificationContext from "../../store/notification";
 import classes from "./Avatar.module.css";
 
 
@@ -8,8 +9,8 @@ const Avatar = () => {
 
     const [showProfile, setShowProfile] = useState(false);
     const [disableAva, setDisableAva] = useState(false);
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-
+    const user = JSON.parse(localStorage.getItem("user"));
+    const {notificationCount} = useContext(NotificationContext)
 
     const toggleShowProfile = () => {
         setDisableAva((prev) => !prev);
@@ -29,6 +30,7 @@ const Avatar = () => {
                     src={user ? user.profile.profile_image : null}
                     alt="profile"
                 />
+                {notificationCount > 0 && <div className={classes.notiBadge}></div>}
             </div>
             {showProfile && (
                 <DropdownMenu toggleShowProfile={toggleShowProfile}/>

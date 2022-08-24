@@ -82,7 +82,7 @@ const Suggestions = () => {
     return (
         <div className={classes.mainPrt}>
             <Card className={classes.card}>
-                <h3>All Friends</h3>
+                <h3>Suggestions</h3>
                 {!isLoading && requestData}
                     
                 {isLoading && <ClipLoader color="#ccc" />}

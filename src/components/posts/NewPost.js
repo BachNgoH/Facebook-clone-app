@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import Card from "../ui/Card";
 import classes from './Post.module.css'
 import NewPostForm from "./NewPostForm";
-import AuthContext from "../../store/auth";
-import { useContext } from "react";
+
 
 const NewPost = (props) => {
     const [showForm, setShowForm] = useState(false)
@@ -15,7 +14,6 @@ const NewPost = (props) => {
     //     }
     //     getUser()
     // }, [ authCtx]);
-    console.log(user, 'IN NEW POST');
 
     return (
         <Card className={classes.listItem}>
@@ -27,7 +25,7 @@ const NewPost = (props) => {
                     <textarea placeholder={`What is on your mind? ${user ? user.first_name: ""}`}/>
                 </div>
             </div>
-            {showForm && <NewPostForm onClose={() => setShowForm(false)} refresh={props.refresh}></NewPostForm>}
+            {showForm && <NewPostForm onClose={() => setShowForm(false)} refresh={props.refresh} in={props.in}></NewPostForm>}
         </Card>
     );
 };
