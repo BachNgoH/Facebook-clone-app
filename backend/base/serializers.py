@@ -3,16 +3,19 @@ from rest_framework import serializers
 from .models import Profile, User, UserFollow, UserFriendRequest
 
 class FollowingSerializer(serializers.ModelSerializer):
+    # id = serializers.UUIDField(format='hex')
     class Meta:
         model = UserFollow
         fields = ("following_user_id", "created")
 
 class FollowersSerializer(serializers.ModelSerializer):
+    # id = serializers.UUIDField(format='hex')
     class Meta:
         model = UserFollow
         fields = ("user_id", "created")
 
 class FriendRequestSerializer(serializers.ModelSerializer):
+    # id = serializers.UUIDField(format='hex')
     class Meta:
         model = UserFriendRequest
         fields = ("user_sender", "created", "accepted")

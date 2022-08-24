@@ -17,7 +17,7 @@ class ConversationViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
     def get_queryset(self):
         queryset = Conversation.objects.filter(
-            name__contains=self.request.user.id
+            name__contains=str(self.request.user.id)
         )
         return queryset
 

@@ -1,8 +1,10 @@
 from django.db import models
 from base.models import User
-
+import uuid
 
 class Group(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     members = models.ManyToManyField(User, related_name="content_groups")
     admin = models.ForeignKey(User, related_name="admin_groups", on_delete=models.CASCADE, null=True)
     
@@ -20,6 +22,8 @@ class Group(models.Model):
 
 # Create your models here.
 class Post(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     author = models.ForeignKey(User, related_name="posts", on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
@@ -36,11 +40,15 @@ class Post(models.Model):
 
 
 class Image(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     image = models.ImageField(null=True, upload_to="posts")
     post = models.ForeignKey(Post, related_name="images", on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name="comments", on_delete=models.CASCADE)
     content = models.CharField(max_length=1000)
@@ -48,6 +56,8 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
 
 class React(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     post = models.ForeignKey(Post, related_name="reacts", on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 

@@ -10,72 +10,9 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from base.models import User
 from jwt import decode as jwt_decode
 from django.conf import settings
+from .consumers import UUIDEncoder
+import json 
 
-
-class TokenAuthentication:
-    """
-    Simple token based authentication.
-
-    Clients should authenticate by passing the token key in the query parameters.
-    For example:
-
-        ?token=401f7ac837da42b97f613d789819ff93537bee6a
-    """
-
-    model = None
-
-    def get_model(self):
-        if self.model is not None:
-            return self.model
-        from rest_framework.authtoken.models import Token 
-        return Token
-
-    """
-    A custom token model may be used, but must have the following properties.
-
-    * key -- The string identifying the token
-    * user -- The user to which the token belongs
-    """
-
-    def authenticate_credentials(self, key):
-        model = self.get_model()
-        try:
-            token = model.objects.select_related("user").get(key=key)
-        # except model.DoesNotExist:
-        #     raise AuthenticationFailed(_("Invalid token."))
-
-        except:
-            raise AuthenticationFailed(_("Invalid"))
-        if not token.user.is_verified:
-            raise AuthenticationFailed(_("User inactive or deleted."))
-
-        print("AUTHENTICATE SUCCESSFULLY")
-        return token.user
-
-
-@database_sync_to_async
-def get_user(scope):
-    """
-    Return the user model instance associated with the given scope.
-    If no user is retrieved, return an instance of `AnonymousUser`.
-    """
-    # postpone model import to avoid ImproperlyConfigured error before Django
-    # setup is complete.
-    from django.contrib.auth.models import AnonymousUser
-
-    if "token" not in scope:
-        raise ValueError(
-            "Cannot find token in scope. You should wrap your consumer in TokenAuthMiddleware."
-        )
-    token = scope["token"]
-    user = None
-    try:
-        auth = TokenAuthentication()
-        user = auth.authenticate_credentials(token)
-    except AuthenticationFailed:
-        print("AUTHENTCATION FAILED")
-        pass
-    return user or AnonymousUser()
 
 class TokenAuthMiddleware:
     """
@@ -86,6 +23,9 @@ class TokenAuthMiddleware:
         # Store the ASGI application we were passed
         self.app = app
 
+    @classmethod
+    def encode_json(cls, content):
+        return json.dumps(content, cls=UUIDEncoder)
     async def __call__(self, scope, receive, send):
         # Look up user from query string (you should also do things like
         # checking if it is a valid user ID, or if scope["user"] is already
@@ -107,7 +47,7 @@ class TokenAuthMiddleware:
         else:
             decoded_data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
             print(decoded_data)
-            user = await sync_to_async(User.objects.get)(id=decoded_data["user_id"])
-            scope["user"] = user
-            
+            # user = await sync_to_async(User.objects.get)(id=decoded_data["user_id"])
+            scope["user_id"] = decoded_data["user_id"]
         return await self.app(scope, receive, send)
+

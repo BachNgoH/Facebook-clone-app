@@ -1,3 +1,4 @@
+from cmath import log
 from channels.generic.websocket import JsonWebsocketConsumer
 from asgiref.sync import async_to_sync
 
@@ -7,13 +8,14 @@ from base.models import User
 from .models import Conversation, Message
 import json 
 from uuid import UUID
+from django.core.serializers.json import DjangoJSONEncoder
+
 
 class UUIDEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, UUID):
             return obj.hex
         return json.JSONEncoder.default(self, obj)
-
 
 class ChatConsumer(JsonWebsocketConsumer):
     """
@@ -28,8 +30,8 @@ class ChatConsumer(JsonWebsocketConsumer):
         self.user = None
 
     def connect(self):
-        self.user = self.scope["user"]
-        print(self.user, "IN CONNECT")
+        self.user = User.objects.get(id=self.scope["user_id"] )
+        print("Already have the user")
         if not self.user.is_authenticated:
             print("user is not authenticated")
             return
@@ -47,13 +49,13 @@ class ChatConsumer(JsonWebsocketConsumer):
 
         self.send_json({
             "type": "online_user_list",
-            "users": [user.id for user in self.conversation.online.all()],
+            "users": [str(user.id) for user in self.conversation.online.all()],
         })
 
         async_to_sync(self.channel_layer.group_send)(
             self.conversation_name,{
                 "type": "user_join",
-                "user": self.user.id,
+                "user": str(self.user.id),
             }
         )
 
@@ -74,7 +76,7 @@ class ChatConsumer(JsonWebsocketConsumer):
                 self.conversation_name,
                 {
                     "type": "user_leave",
-                    "user": self.user.id
+                    "user": str(self.user.id)
                 }
             )
             self.conversation.online.remove(self.user)
@@ -89,11 +91,12 @@ class ChatConsumer(JsonWebsocketConsumer):
                 content=content["message"],
                 conversation = self.conversation
             )
+
             async_to_sync(self.channel_layer.group_send)(
                 self.conversation_name,
                 {
                     "type": "chat_message_echo",
-                    "name" : str(self.user),
+                    "name" : str(self.user.id),
                     "message": MessageSerializer(message).data,
                 }
             )
@@ -102,8 +105,8 @@ class ChatConsumer(JsonWebsocketConsumer):
                 notification_group_name,
                 {
                     "type": "new_message_notification",
-                    "name": self.user.id,
-                    "message": MessageSerializer(message).data
+                    "name": str(self.user.id),
+                    "message": MessageSerializer(message).data,
                 }
             )
         if message_type == "typing":
@@ -111,7 +114,7 @@ class ChatConsumer(JsonWebsocketConsumer):
                 self.conversation_name,
                 {
                     "type": "typing",
-                    "user": self.user.id,
+                    "user": str(self.user.id),
                     "typing": content["typing"],
                 }
             )
@@ -136,7 +139,7 @@ class ChatConsumer(JsonWebsocketConsumer):
     def get_receiver(self):
         ids = self.conversation_name.split("__")
         for id in ids:
-            if int(id) != int(self.user.id):
+            if id != str(self.user.id):
                 return User.objects.get(id=id)
 
     def user_join(self, event):
@@ -156,7 +159,7 @@ class ChatConsumer(JsonWebsocketConsumer):
 
     @classmethod
     def encode_json(cls, content):
-        return json.dumps(content, cls=UUIDEncoder)
+        return json.dumps(content, cls=DjangoJSONEncoder)
 
 
 class NotificationConsumer(JsonWebsocketConsumer):
@@ -166,7 +169,8 @@ class NotificationConsumer(JsonWebsocketConsumer):
         self.notification_group_name = None
 
     def connect(self):
-        self.user = self.scope["user"]
+        print("IS IN CONSUMMER")
+        self.user = User.objects.get(id= self.scope["user_id"])
         if not self.user.is_authenticated:
             return
         self.accept()
@@ -200,3 +204,7 @@ class NotificationConsumer(JsonWebsocketConsumer):
     
     def unread_count(self, event):
         self.send_json(event)
+
+    # @classmethod
+    # def encode_json(cls, content):
+    #     return json.dumps(content, cls=UUIDEncoder)

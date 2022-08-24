@@ -2,9 +2,10 @@ from dataclasses import fields
 from rest_framework import serializers
 from chats.models import Conversation, Message
 from base.models import User
-from base.serializers import UserSerializer
+from base.serializers import UserPublicSerializer, UserSerializer
 
 class MessageSerializer(serializers.ModelSerializer):
+
     from_user = serializers.SerializerMethodField()
     to_user = serializers.SerializerMethodField()
     conversation = serializers.SerializerMethodField()
@@ -25,10 +26,10 @@ class MessageSerializer(serializers.ModelSerializer):
         return str(obj.conversation.id)
 
     def get_from_user(self, obj):
-        return UserSerializer(obj.from_user).data
+        return UserPublicSerializer(obj.from_user).data
 
     def get_to_user(self, obj):
-        return UserSerializer(obj.to_user).data
+        return UserPublicSerializer(obj.to_user).data
 
 
 class ConversationSerializer(serializers.ModelSerializer):
@@ -49,7 +50,8 @@ class ConversationSerializer(serializers.ModelSerializer):
     def get_other_user(self, obj):
         ids = obj.name.split("__")
         context = {}
+
         for id in ids:
-            if int(id) != int( self.context["user"].id ):
+            if id !=  str(self.context["user"].id):
                 other_user = User.objects.get(id=id)
                 return UserSerializer(other_user, context=context).data

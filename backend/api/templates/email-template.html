@@ -1,70 +1,3 @@
-from re import template
-from django.urls import reverse
-from rest_framework import serializers
-from base.models import User
-from rest_framework.validators import UniqueValidator
-from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth.tokens import default_token_generator
-from base.models import Profile
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.template import Template, Context
-
-base_url = "localhost:8000"
-
-class RegisterSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
-    )
-
-    password = serializers.CharField(
-        write_only=True, required=True, validators=[validate_password])
-    password2 = serializers.CharField(write_only=True, required=True)
-    is_verified = serializers.BooleanField(read_only=True)
-
-    class Meta:
-        model = User
-        fields = ('email', 'first_name', 'last_name', 
-                'is_verified', 'password', 'password2',)
-        extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True}
-        }
-
-    def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError(
-                {"password": "Password fields didn't match."})
-
-        return attrs
-
-    def create(self, validated_data):
-
-        user = User.objects.create(
-            email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            is_verified=False,
-        )
-
-        user.set_password(validated_data['password'])
-        
-        profile = Profile.objects.create(user=user)
-
-        confirmation_token = default_token_generator.make_token(user)
-        activation_link = f'{base_url}{reverse("activation")}?user_id={user.id}&confirmation_token={confirmation_token}'
-
-        user.email_user('Verify Your Email',
-                        build_email(activation_link))
-        user.save()
-        profile.save()
-
-        return user
-
-
-def build_email(link):
-    template = Template("""
 <!DOCTYPE html>
 <html>
 
@@ -81,6 +14,7 @@ def build_email(link):
                 font-weight: 400;
                 src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
             }
+
             @font-face {
                 font-family: 'Lato';
                 font-style: normal;
@@ -208,7 +142,9 @@ def build_email(link):
                                     <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
                                         <table border="0" cellspacing="0" cellpadding="0">
                                             <tr>
-                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="{{link}}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;" >Confirm Account</a></td>
+                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="#" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;" href="...
+                                                    content
+                                                    ...">Confirm Account</a></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -223,8 +159,10 @@ def build_email(link):
                     </tr> <!-- COPY -->
                     <tr>
                         <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;"><a href="{{link}}" target="_blank" style="color: #FFA73B;">
-                                {{link}} 
+                            <p style="margin: 0;"><a href="#" target="_blank" style="color: #FFA73B;">
+                                ...
+                                content
+                                ...
                             </a></p>
                         </td>
                     </tr>
@@ -235,7 +173,7 @@ def build_email(link):
                     </tr>
                     <tr>
                         <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Cheers,<br>FBC Team</p>
+                            <p style="margin: 0;">Cheers,<br>BBB Team</p>
                         </td>
                     </tr>
                 </table>
@@ -246,6 +184,8 @@ def build_email(link):
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                     <tr>
                         <td bgcolor="#FFECD1" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help?</h2>
+                            <p style="margin: 0;"><a href="#" target="_blank" style="color: #FFA73B;">We&rsquo;re here to help you out</a></p>
                         </td>
                     </tr>
                 </table>
@@ -254,6 +194,11 @@ def build_email(link):
         <tr>
             <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#f4f4f4" align="left" style="padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;"> <br>
+                            <p style="margin: 0;">If these emails get annoying, please feel free to <a href="#" target="_blank" style="color: #111111; font-weight: 700;">unsubscribe</a>.</p>
+                        </td>
+                    </tr>
                 </table>
             </td>
         </tr>
@@ -261,6 +206,3 @@ def build_email(link):
 </body>
 
 </html>
-    """)
-    context = Context({"link": link})
-    return template.render(context)
